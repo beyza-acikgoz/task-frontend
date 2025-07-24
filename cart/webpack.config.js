@@ -46,9 +46,10 @@ module.exports = (_, argv) => ({
       remotes: {
         home: "home@http://localhost:3000/remoteEntry.js",
       },
-      exposes: {},
-      shared: {
-        ...deps,
+      exposes: {
+        "./CartList": "./src/components/CartList.tsx",
+      },
+     shared: {
         react: {
           singleton: true,
           requiredVersion: deps.react,
@@ -57,6 +58,22 @@ module.exports = (_, argv) => ({
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
+        "babel-runtime": {
+          singleton: true,
+          requiredVersion: deps["babel-runtime"],
+        },
+        "styled-components": {
+          singleton: true,
+          requiredVersion: deps["styled-components"]
+        },
+        "@emotion/react": {
+          singleton: true,
+          requiredVersion: deps["@emotion/react"],
+        },
+        "@emotion/styled": {
+          singleton: true,
+          requiredVersion: deps["@emotion/styled"],
+        }
       },
     }),
     new HtmlWebPackPlugin({

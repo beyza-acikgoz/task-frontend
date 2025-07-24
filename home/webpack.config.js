@@ -43,14 +43,16 @@ module.exports = (_, argv) => ({
     new ModuleFederationPlugin({
       name: "home",
       filename: "remoteEntry.js",
-      remotes: {},
+      remotes: {
+        cart: "cart@http://localhost:3001/remoteEntry.js",
+      },
       exposes: {
         "./Header": "./src/components/Header.tsx",
-        "./Datatables": "./src/components/DataTables.tsx",
+        "./Datatables": "./src/components/Datatables.tsx",
         "./addRow": "./src/utils/addRow.ts",
+        "./cartUtils": "./src/utils/cartUtils.ts",
       },
       shared: {
-        ...deps,
         react: {
           singleton: true,
           requiredVersion: deps.react,
@@ -63,6 +65,18 @@ module.exports = (_, argv) => ({
           singleton: true,
           requiredVersion: deps["babel-runtime"],
         },
+        "styled-components": {
+          singleton: true,
+          requiredVersion: deps["styled-components"]
+        },
+        "@emotion/react": {
+          singleton: true,
+          requiredVersion: deps["@emotion/react"],
+        },
+        "@emotion/styled": {
+          singleton: true,
+          requiredVersion: deps["@emotion/styled"],
+        }
       },
     }),
     new HtmlWebPackPlugin({

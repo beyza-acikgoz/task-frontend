@@ -18,7 +18,7 @@ const App = () =>{
   return(
   <div className="mt-10 text-3xl mx-auto max-w-6xl">
     <Suspense fallback={<div>Loading...</div>}>
-    <Header/>
+    <Header title={"Sepet"}/>
           <button
       className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
       onClick={() => addRow(allData, setAllData)}
