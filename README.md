@@ -1,7 +1,11 @@
 
 # 🧵 Beyza Kilim | Mikro-Frontend Mimarili E-Ticaret Uygulaması
 
-Bu proje, **mikro-frontend mimarisi** kullanılarak geliştirilmiş, el dokuması ve özel tasarım kilimlerin listelendiği ve sepete eklenebildiği modern bir e-ticaret platformudur. Proje, iki bağımsız Next.js uygulamasından oluşmaktadır: `home` (ürün listeleme) ve `cart` (sepet görüntüleme).
+Bu proje, **mikro-frontend mimarisi** kullanılarak geliştirilmiş, el dokuması ve özel tasarım kilimlerin listelendiği ve sepete eklenebildiği modern bir e-ticaret platformudur. Proje, iki bağımsız React tabanlı uygulamadan oluşmaktadır: `home` (ürün listeleme) ve `cart` (sepet görüntüleme). Uygulamalar, Webpack Module Federation ile entegre edilerek tek bir birleşik kullanıcı deneyimi sunmaktadır.
+
+
+# Proje kaynağı:
+🔗 [Link](https://github.com/beyza-acikgoz/task-frontend)
 
 ## 🧩 Mikro-Frontend Mimarisi
 
