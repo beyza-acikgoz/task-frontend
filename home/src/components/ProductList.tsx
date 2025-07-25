@@ -1,31 +1,21 @@
 import React from 'react';
-import { Grid, Typography, Container } from '@mui/material';
-import { ProductCard } from './ProductCard';
+import { Grid } from '@mui/material';
+import ProductCard from './ProductCard';
 import { products } from '../data/products';
 
-export const ProductList = () => {
+export default function ProductList() {
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: 'bold', color: 'rgb(127, 29, 29)' }}
-      >
+    <>
+      <h2 className="text-center text-3xl font-bold mb-8 text-red-700">
         Beyza Kilim | El Dokuması ve Özel Tasarım Kilimler
-      </Typography>
-
-      <Grid
-        container
-        spacing={4}
-        justifyContent="flex-start" // sola yaslı kartlar
-      >
+      </h2>
+      <Grid container spacing={3} justifyContent="center">
         {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-            <ProductCard product={product} />
-          </Grid>
+        <div key={product.id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 box-border">
+          <ProductCard product={product} />
+        </div>
         ))}
       </Grid>
-    </Container>
+    </>
   );
-};
+}

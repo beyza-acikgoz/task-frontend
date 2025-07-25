@@ -44,11 +44,12 @@ module.exports = (_, argv) => ({
       name: "cart",
       filename: "remoteEntry.js",
       remotes: {
-        home: "home@http://localhost:3000/remoteEntry.js",
       },
       exposes: {
-        "./CartList": "./src/components/CartList.tsx",
-      },
+        "./CartItem": "./src/components/CartItem.tsx",
+        "./CartItemList": "./src/components/CartItemList.tsx",
+        "./CartPopover": "./src/components/CartPopover.tsx",
+        "./BoxProductList": "./src/components/BoxProductList.tsx",},
      shared: {
         react: {
           singleton: true,

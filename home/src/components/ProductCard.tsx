@@ -1,17 +1,19 @@
+'use client';
+
+import { Card, CardMedia, CardContent, Typography, Button } from '@mui/material';
 import React from 'react';
 import { Product } from '../data/products';
 import { addToCart } from '../utils/cartUtils';
-import { Card, CardMedia, CardContent, Typography, Button } from '@mui/material';
 
 interface Props {
   product: Product;
 }
 
-export const ProductCard: React.FC<Props> = ({ product }) => {
+export default function ProductCard({ product }: Props) {
   return (
     <Card
-      className="shadow-xl transition-transform hover:scale-[1.02]"
-      sx={{ maxWidth: 300, overflow: 'visible' }}
+      sx={{ maxWidth: 300, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+      className="shadow-lg hover:scale-[1.02] transition-transform"
       elevation={6}
     >
       <CardMedia
@@ -21,27 +23,22 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         alt={product.title}
         sx={{ objectFit: 'cover' }}
       />
-      <CardContent className="flex flex-col justify-between h-48">
-        <Typography variant="h6" className="font-bold">
+      <CardContent className="flex flex-col flex-grow">
+        <Typography variant="h6" component="h3" className="font-bold">
           {product.title}
         </Typography>
-        <Typography variant="body2" color="text.secondary" className="mt-2">
+        <Typography variant="body2" color="text.secondary" className="mt-2 flex-grow">
           {product.description}
         </Typography>
         <div className="mt-4 flex justify-between items-center">
-          <Typography variant="h6" className="text-green-700 font-semibold">
+          <Typography variant="h6" color="success.main" className="font-semibold">
             ₺{product.price}
           </Typography>
-          <Button
-            onClick={() => addToCart(product)}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
+          <Button size="small" variant="contained" color="primary" onClick={() => addToCart(product)}>
             Sepete Ekle
           </Button>
         </div>
       </CardContent>
     </Card>
   );
-};
+}

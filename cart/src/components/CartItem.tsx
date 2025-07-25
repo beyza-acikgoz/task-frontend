@@ -1,23 +1,37 @@
-import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
-import { Product } from "home/cartUtils";
+import React from 'react';
+import { Button, Box, Typography } from '@mui/material';
 
-const CartItem = ({ product }: { product: Product }) => {
+interface CartItemProps {
+  product: {
+    id: number;
+    title: string;
+    price: number;
+    image: string;
+  };
+  quantity: number;
+  onRemove: (id: number) => void;
+}
+
+export default function CartItem({ product, quantity, onRemove }: CartItemProps) {
   return (
-    <Card className="shadow-md">
+    <Box className="flex items-center gap-3">
       <img
         src={product.image}
         alt={product.title}
-        className="w-full h-48 object-cover"
+        className="w-[48px] h-[48px] object-cover rounded-sm flex-shrink-0"
+        style={{ maxWidth: '30%' }}
       />
-      <CardContent>
-        <Typography variant="h6">{product.title}</Typography>
-        <Typography variant="body1" color="textSecondary">
-          ${product.price}
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="body2" fontWeight="medium">
+          {product.title}
         </Typography>
-      </CardContent>
-    </Card>
+        <Typography variant="caption" color="text.secondary">
+          ₺{product.price} — {quantity} adet
+        </Typography>
+      </Box>
+      <Button size="small" color="error" onClick={() => onRemove(product.id)}>
+        Sil
+      </Button>
+    </Box>
   );
-};
-
-export default CartItem;
+}

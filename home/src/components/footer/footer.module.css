@@ -1,0 +1,59 @@
+.footerContainer {
+  width: 100%;
+  border-top: 1px solid var(--gray-alpha-200);
+  padding: 40px 20px;
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  color: var(--gray-rgb);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section h4 {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.links a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+  font-size: 18px;
+  align-items: center;
+}
+
+.bottomLine {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 12px;
+  color: gray;
+}
+
+.divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background-color: var(--gray-alpha-200);
+  margin-bottom: 24px;
+}

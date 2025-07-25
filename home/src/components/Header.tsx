@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useCartStore } from '../utils/cartUtils';
 import {
   AppBar,
@@ -6,103 +6,134 @@ import {
   Typography,
   IconButton,
   Badge,
-  Popover,
   Box,
-  Divider,
-  Button
+  Button,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
+import {ErrorBoundary} from './ErrorBoundary';
+import { safeLazy } from '../utils/safeLazy';
 
-export const Header = () => {
-  const cart = useCartStore((state) => state.cart);
-  const removeFromCart = useCartStore((state) => state.removeFromCart);
-  const getItemCount = useCartStore((state) => state.getItemCount);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const CartPopover = safeLazy(() => import('cart/CartPopover'));
+
+interface HeaderProps {
+  isAuthenticated: boolean;
+  onLogout: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ isAuthenticated, onLogout }) => {
+  const cart = useCartStore(state => state.cart);
+  const removeFromCart = useCartStore(state => state.removeFromCart);
+  const getItemCount = useCartStore(state => state.getItemCount);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState<HTMLElement | null>(null);
+  const navigate = useNavigate();
 
   const handleCartClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+    setAnchorEl(prev => (prev ? null : event.currentTarget));
   };
 
-  const open = Boolean(anchorEl);
+  const handleCheckout = () => {
+    setAnchorEl(null);
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/box' } });
+    } else {
+      navigate('/box');
+    }
+  };
 
-  const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
+    setProfileMenuAnchor(event.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setProfileMenuAnchor(null);
+  };
+
+  const handleLogout = () => {
+    handleProfileClose();
+    onLogout();
+    navigate('/');
+  };
+
+  const handleLoginRedirect = () => {
+    navigate('/login');
+  };
 
   return (
     <>
-      <AppBar position="static" className="bg-white shadow text-black">
-        <Toolbar className="max-w-7xl mx-auto w-full flex justify-between items-center">
-          {/* Sol: Marka */}
-          <Typography variant="h6" className="font-bold tracking-wide text-red-800">
+      <AppBar position="sticky" sx={{ background: "#000", color: "#fff" }}>
+        <Toolbar sx={{ justifyContent: "space-between", px: "2rem" }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, cursor: "pointer" }} onClick={() => navigate('/')}>
             Beyza Kilim
           </Typography>
 
-          {/* Sağ: Sepet */}
-          <IconButton onClick={handleCartClick}>
-            <Badge badgeContent={getItemCount()} color="error">
-              <ShoppingCartIcon className="text-red-800" />
-            </Badge>
-          </IconButton>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {!isAuthenticated ? (
+              <>
+                <Button color="inherit" onClick={handleLoginRedirect}>
+                  Giriş Yap
+                </Button>
+                <IconButton onClick={handleCartClick} color="inherit" aria-label="cart">
+                  <Badge badgeContent={getItemCount()} color="error">
+                    <ShoppingCartIcon className="text-red-800" />
+                  </Badge>
+                </IconButton>
+              </>
+            ) : (
+              <>
+                <IconButton onClick={handleCartClick} color="inherit" aria-label="cart">
+                  <Badge badgeContent={getItemCount()} color="error">
+                    <ShoppingCartIcon className="text-red-800" />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  color="inherit"
+                  onClick={handleProfileClick}
+                  aria-controls={profileMenuAnchor ? 'profile-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={profileMenuAnchor ? 'true' : undefined}
+                >
+                  <AccountCircleIcon fontSize="large" />
+                </IconButton>
+
+                <Menu
+                  id="profile-menu"
+                  anchorEl={profileMenuAnchor}
+                  open={Boolean(profileMenuAnchor)}
+                  onClose={handleProfileClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'profile-button',
+                  }}
+                >
+                  <MenuItem onClick={() => { handleProfileClose(); navigate('/profile'); }}>
+                    Profilim
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>Çıkış Yap</MenuItem>
+                  <MenuItem onClick={() => { handleProfileClose(); navigate('/box'); }}>
+                    Sepetim
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
 
-      <Popover
-        open={open}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            maxWidth: 320,
-            width: '90vw',
-            p: 2,
-          },
-        }}
-      >
-        <Typography variant="h6" gutterBottom sx={{ color: 'rgb(127, 29, 29)', fontWeight: 'bold' }}>
-          Sepetiniz
-        </Typography>
-        <Divider sx={{ my: 1 }} />
-
-        {cart.length === 0 ? (
-          <Typography variant="body2">Sepetinizde ürün yok.</Typography>
-        ) : (
-          <>
-            <Box className="max-h-60 overflow-y-auto space-y-3">
-              {cart.map(({ product, quantity }, i) => (
-                <Box key={i} className="flex items-center gap-3">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-[48px] h-[48px] object-cover rounded-sm"
-                    style={{ maxWidth: '30%', height: 'auto' }}
-                  />
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Typography variant="body2" fontWeight="medium">
-                      {product.title}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      ₺{product.price} — {quantity} adet
-                    </Typography>
-                  </Box>
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={() => removeFromCart(product.id)}
-                  >
-                    Sil
-                  </Button>
-                </Box>
-              ))}
-            </Box>
-
-            <Divider sx={{ my: 1 }} />
-            <Typography variant="subtitle2" align="right" sx={{ fontWeight: 'bold' }}>
-              Toplam: ₺{total.toFixed(2)}
-            </Typography>
-          </>
-        )}
-      </Popover>
+      <ErrorBoundary fallback={<div>Sepet bileşeni yüklenirken hata oluştu.</div>}>
+        <Suspense fallback={<div>Loading..</div>}>
+          <CartPopover
+            anchorEl={anchorEl}
+            onClose={() => setAnchorEl(null)}
+            cart={cart}
+            removeFromCart={removeFromCart}
+            onCheckout={handleCheckout}
+          />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 };
